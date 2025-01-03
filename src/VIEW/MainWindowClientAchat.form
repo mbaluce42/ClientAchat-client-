@@ -8,8 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <!-- Client Section -->
-      <grid id="clientPanel" layout-manager="GridLayoutManager" row-count="2" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="clientPanel" layout-manager="GridLayoutManager" row-count="2" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -45,17 +44,9 @@
             </constraints>
             <properties/>
           </component>
-          <component id="newClientCheckbox" class="javax.swing.JCheckBox" binding="nouveauClientCheckBox">
-            <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Nouveau client"/>
-            </properties>
-          </component>
           <component id="validateClientBtn" class="javax.swing.JButton" binding="validerClientButton">
             <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Valider"/>
@@ -79,8 +70,6 @@
           </component>
         </children>
       </grid>
-
-      <!-- Search Section -->
       <grid id="searchPanel" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
@@ -89,7 +78,6 @@
         <properties/>
         <border type="etched" title="Recherche de livres"/>
         <children>
-          <!-- Search Criteria -->
           <component id="titreLabel" class="javax.swing.JLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -154,8 +142,6 @@
               <text value="Rechercher"/>
             </properties>
           </component>
-
-          <!-- Search Results Table -->
           <scrollpane id="resultScrollPane">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="6" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -171,8 +157,6 @@
           </scrollpane>
         </children>
       </grid>
-
-      <!-- Quantity Section -->
       <grid id="quantityPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
@@ -205,8 +189,6 @@
           </component>
         </children>
       </grid>
-
-      <!-- Cart Section -->
       <grid id="cartPanel" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>

@@ -26,7 +26,6 @@ public class MainWindowClientAchat extends JFrame
 {
     private JPanel mainPanel;
     private JTextField nomField, prenomField, clientIdField, titreField;
-    private JCheckBox nouveauClientCheckBox;
     private JButton validerClientButton;
     private JComboBox<String> auteurCombo, sujetCombo;
     private JSpinner prixMaxSpinner, quantitySpinner;
@@ -47,7 +46,7 @@ public class MainWindowClientAchat extends JFrame
 
     public MainWindowClientAchat()
     {
-        setTitle("Application Achat");
+        setTitle("Application Achat (Client)");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Configuration des spinners
@@ -154,7 +153,8 @@ public class MainWindowClientAchat extends JFrame
 
     private void handleClientValidation()
     {
-        try {
+        try
+        {
             String nom = nomField.getText().trim();
             String prenom = prenomField.getText().trim();
             String numClient = clientIdField.getText().trim();
@@ -165,103 +165,73 @@ public class MainWindowClientAchat extends JFrame
                 return;
             }
 
-            if (nouveauClientCheckBox.isSelected())
+
+            // Vérifier si le client existe
+            RequeteGetClient reqGetClient=new RequeteGetClient(nom,prenom);
+            ReponseGetClient repGetClient=(ReponseGetClient)protocol.echangeObject(reqGetClient);
+
+            if (repGetClient instanceof ReponseGetClient== false)
             {
-                // Créer un nouveau client
-                String telephone = JOptionPane.showInputDialog(this, "Numéro de téléphone :");
-                String adresse = JOptionPane.showInputDialog(this, "Adresse :");
-                String email = JOptionPane.showInputDialog(this, "Email :");
+                JOptionPane.showMessageDialog(this, "Erreur lors de la récupération du client", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-                RequeteAddClient reqAddClient=new RequeteAddClient(nom,prenom,telephone,adresse,email);
-                ReponseAddClient repAddClient=(ReponseAddClient)protocol.echangeObject(reqAddClient);
-
-                if (repAddClient instanceof ReponseAddClient== false)
+            if (repGetClient.isSuccess())
+            {
+                byte[] digest = null;
+                //generer le digest
+                try
                 {
-                    JOptionPane.showMessageDialog(this, "Erreur lors de la création du client", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    digest = MyCrypto.generateDigest(numClient, repGetClient.getSelServeur());
+
+                    RequeteVerifIdClient reqVerifIdClient = new RequeteVerifIdClient(nom, prenom, digest);
+
+                    ReponseVerifIdClient repVerifIdClient = (ReponseVerifIdClient) protocol.echangeObject(reqVerifIdClient);
+
+                    if (repVerifIdClient instanceof ReponseVerifIdClient == false)
+                    {
+                        JOptionPane.showMessageDialog(this, "Erreur lors de la vérification du client", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    if (repVerifIdClient.isSuccess())
+                    {
+                        clientId = numClient;
+                        JOptionPane.showMessageDialog(this, repVerifIdClient.getMessage(), "Succès", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this, repVerifIdClient.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
                 }
 
-                if (repAddClient.isSuccess())
-                {
-                    clientId = String.valueOf(repAddClient.getIdClient());
-                    JOptionPane.showMessageDialog(this, "Client créé avec succès", "Succès", JOptionPane.INFORMATION_MESSAGE);
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(this, "Erreur: " + repAddClient.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                // Activer les contrôles de recherche et panier
+                enableSearchControls(true);
+                enableCartControls(true);
+
+                // Désactiver les champs client
+                nomField.setEnabled(false);
+                prenomField.setEnabled(false);
+                validerClientButton.setEnabled(false);
+
+
+                // Charger les listes
+                loadAuthorsList();
+                loadSubjectsList();
+                updateCartTable();
+
+
             }
             else
             {
-                // Vérifier si le client existe
-                RequeteGetClient reqGetClient=new RequeteGetClient(nom,prenom);
-                ReponseGetClient repGetClient=(ReponseGetClient)protocol.echangeObject(reqGetClient);
-
-                if (repGetClient instanceof ReponseGetClient== false)
-                {
-                    JOptionPane.showMessageDialog(this, "Erreur lors de la récupération du client", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                if (repGetClient.isSuccess())
-                {
-                    byte[] digest = null;
-                    //generer le digest
-                    try
-                    {
-                        digest = MyCrypto.generateDigest(numClient, repGetClient.getSelServeur());
-
-                        RequeteVerifIdClient reqVerifIdClient = new RequeteVerifIdClient(nom, prenom, digest);
-
-                        ReponseVerifIdClient repVerifIdClient = (ReponseVerifIdClient) protocol.echangeObject(reqVerifIdClient);
-
-                        if (repVerifIdClient instanceof ReponseVerifIdClient == false)
-                        {
-                            JOptionPane.showMessageDialog(this, "Erreur lors de la vérification du client", "Erreur", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        if (repVerifIdClient.isSuccess())
-                        {
-                            clientId = numClient;
-                            JOptionPane.showMessageDialog(this, repVerifIdClient.getMessage(), "Succès", JOptionPane.INFORMATION_MESSAGE);
-                        }
-                        else
-                        {
-                            JOptionPane.showMessageDialog(this, repVerifIdClient.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-
-
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(this, "Client non trouvé", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                JOptionPane.showMessageDialog(this, "Client non trouvé", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-
-            // Activer les contrôles de recherche et panier
-            enableSearchControls(true);
-            enableCartControls(true);
-
-            // Désactiver les champs client
-            nomField.setEnabled(false);
-            prenomField.setEnabled(false);
-            nouveauClientCheckBox.setEnabled(false);
-            validerClientButton.setEnabled(false);
-
-
-            // Charger les listes
-            loadAuthorsList();
-            loadSubjectsList();
-            updateCartTable();
 
         } catch (IOException | ClassNotFoundException ex) {
             System.out.println("OK CHEF");
@@ -708,7 +678,7 @@ public class MainWindowClientAchat extends JFrame
         titreField.setText("");
         prixMaxSpinner.setValue(0.0);
         quantitySpinner.setValue(1);
-        nouveauClientCheckBox.setSelected(false);
+
 
         // Vider les tables
         booksTableModel.setRowCount(0);
@@ -720,7 +690,6 @@ public class MainWindowClientAchat extends JFrame
         // Réactiver les champs client
         nomField.setEnabled(true);
         prenomField.setEnabled(true);
-        nouveauClientCheckBox.setEnabled(true);
         validerClientButton.setEnabled(true);
 
         clientId = null;
