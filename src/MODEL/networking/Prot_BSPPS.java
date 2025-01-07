@@ -14,8 +14,6 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -25,9 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import java.io.*;
 
-public class Prot_BSPP implements Protocole
+public class Prot_BSPPS implements Protocole
 {
-    private static final String PROTOCOL_NAME = "BSPP";
+    private static final String PROTOCOL_NAME = "BSPPS";
     private Logger logger;
     private Socket clientSocket;
     private Socket clientSocket1;
@@ -36,7 +34,7 @@ public class Prot_BSPP implements Protocole
     private Map<Socket, SecretKey> sessionKeys = new ConcurrentHashMap<>(); //pour chaque socket on a une session key
     private Map<Socket, byte[]> salts = new ConcurrentHashMap<>();//pour chaque socket on a un salt
 
-    public Prot_BSPP(Logger logger)
+    public Prot_BSPPS(Logger logger)
     {
         this.logger = logger;
         try {
@@ -48,7 +46,7 @@ public class Prot_BSPP implements Protocole
             logger.Trace("Erreur initialisation sécurité: " + e.getMessage());
         }
     }
-    public Prot_BSPP(Socket clientSocket1)
+    public Prot_BSPPS(Socket clientSocket1)
     {
         this.clientSocket1 = clientSocket1;
     }

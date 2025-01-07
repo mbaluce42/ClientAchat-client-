@@ -7,17 +7,14 @@ import MODEL.entity.Book;
 import MODEL.networking.MyCrypto;
 import MODEL.networking.SocketManager;
 
-import MODEL.networking.Prot_BSPP;
+import MODEL.networking.Prot_BSPPS;
 import ServeurGeneriqueTCP.reponses.*;
 import ServeurGeneriqueTCP.requetes.*;
 
 
-import javax.crypto.SecretKey;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class MainWindowClientAchat extends JFrame
     private DefaultTableModel cartTableModel;
 
     private Socket clientSocket;
-    private Prot_BSPP protocol;
+    private Prot_BSPPS protocol;
     private String clientId = null;
 
     public MainWindowClientAchat()
@@ -71,7 +68,7 @@ public class MainWindowClientAchat extends JFrame
         // Connexion au serveur
         try {
             clientSocket = SocketManager.createClientSocket("localhost", "50001"); // PORT_PAYMENT
-            protocol = new Prot_BSPP(clientSocket);
+            protocol = new Prot_BSPPS(clientSocket);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Erreur de connexion au serveur", "Erreur", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
